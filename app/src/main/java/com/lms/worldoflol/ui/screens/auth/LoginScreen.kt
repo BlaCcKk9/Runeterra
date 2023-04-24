@@ -1,4 +1,4 @@
- package com.lms.worldoflol.ui.screens.auth
+package com.lms.worldoflol.ui.screens.auth
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,12 +22,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,11 +38,14 @@ import com.lms.worldoflol.R
 import com.lms.worldoflol.common.NoInternetConnectionScreen
 import com.lms.worldoflol.common.ErrorType
 import com.lms.worldoflol.common.RuneterraBottomSheet
+import com.lms.worldoflol.common.RuneterraContent
 import com.lms.worldoflol.domain.model.remote.Summoner
 import com.lms.worldoflol.ui.screens.auth.components.*
 import com.lms.worldoflol.ui.screens.auth.components.SelectRegionButton
+import com.lms.worldoflol.ui.theme.textStyle
 import com.lms.worldoflol.ui.theme.textStyle24
 import com.lms.worldoflol.utils.backgroundWithBorder
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalMaterialApi::class,
@@ -46,191 +53,97 @@ import com.lms.worldoflol.utils.backgroundWithBorder
 )
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
     navigateMainScreen: (summoner: Summoner) -> Unit
 ) {
+    val viewModel = hiltViewModel<LoginViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val selecteableRegionName = remember { derivedStateOf { state.selectedRegionName } }
-    val startBottomSheet = remember { derivedStateOf { state.isSelectRegionClicked } }
-    var accountNameNotFound by remember { mutableStateOf(false) }
 
-
-    val sheetState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Collapsed,
-        animationSpec = tween(durationMillis = 500)
+    LoginContent(
+        state = state,
+        onEvent = viewModel::onEvent,
+        onContinue = { navigateMainScreen(it) }
     )
-    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
-    val bottomSheet = RuneterraBottomSheet(sheetState)
+}
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun LoginContent(
+    state: LoginState,
+    onEvent: (LoginEvent) -> Unit,
+    onContinue: (Summoner) -> Unit
+) {
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        sheetBackgroundColor = Color(0x800E141B),
-        sheetPeekHeight = 0.dp,
-        sheetGesturesEnabled = false,
-        sheetElevation = 0.dp,
+    val coroutineScope = rememberCoroutineScope()
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.Expanded },
+        skipHalfExpanded = true
+    )
+
+    var selectedRegion by remember {
+        mutableStateOf("")
+    }
+
+    var summonerName by remember {
+        mutableStateOf("")
+    }
+
+    ModalBottomSheetLayout(
+        sheetState = modalSheetState,
+        sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
         sheetContent = {
             RegionsBottomSheet(
-                onCloseClick = {
-                    viewModel.onEvent(
-                        LoginEvent.OnRegionClick(selecteableRegionName.value)
-                    )
-                },
-                onSelectRegion = { regionName ->
-                    viewModel.onEvent(
-                        LoginEvent.OnRegionClick(regionName)
-                    )
+                onCloseClick = { coroutineScope.launch { modalSheetState.hide() } },
+                onSelectRegion = {
+                    coroutineScope.launch { modalSheetState.hide() }
+                    selectedRegion = it
                 }
             )
-        },
+        }
     ) {
-        bottomSheet.BottomSheetUpdate(ifExpand = { startBottomSheet.value })
-
-        AnimatedVisibility(
-            visible = state.error != null,
-            enter = scaleIn(spring(stiffness = Spring.StiffnessLow)),
-            exit = scaleOut()
-        ) {
-            when (state.error) {
-                is ErrorType.NoInternetConnection -> {
-                    NoInternetConnectionScreen {
-                        viewModel.onEvent(LoginEvent.OnRefresh)
-                    }
-                }
-
-                is ErrorType.NotFound -> {
-                    accountNameNotFound = true
-                }
-
-                else -> {}
-            }
-
-        }
-
-        LoginScreenContent(
-            isLoading = state.isLoading,
-            isAccountNotFound = { accountNameNotFound },
-            isSelectRegionClicked = { startBottomSheet.value },
-            selectedRegionName = { selecteableRegionName.value },
-            onSelectRegionButtonClicked = { viewModel.onEvent(LoginEvent.OnSelectRegionClick) },
-            onStartButtonClicked = { summonerName ->
-                viewModel.onEvent(
-                    LoginEvent.OnLoginClick(
-                        region = state.selectedRegionName,
-                        summonerName = summonerName
-                    ) { summoner -> navigateMainScreen(summoner) }
-                )
-            })
-    }
-}
-
-
-@OptIn(ExperimentalAnimationApi::class)
-@ExperimentalMaterialApi
-@Composable
-fun LoginScreenContent(
-    isLoading: Boolean,
-    isAccountNotFound: () -> Boolean,
-    isSelectRegionClicked: () -> Boolean,
-    selectedRegionName: () -> String,
-    onSelectRegionButtonClicked: () -> Unit,
-    onStartButtonClicked: (summonerName: String) -> Unit,
-) {
-    var summonerName by remember { mutableStateOf(TextFieldValue("")) }
-    val padding = remember { Animatable(260f) }
-
-    LaunchedEffect(key1 = isSelectRegionClicked()) {
-        padding.animateTo(
-            targetValue = if (isSelectRegionClicked()) 80f else if (selectedRegionName().isNotBlank()) 180f else 260f,
-            animationSpec = tween(durationMillis = 500)
-        )
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        LoginBackground()
-
-        Image(
-            modifier = Modifier
-                .padding(
-                    start = 60.dp,
-                    end = 60.dp,
-                    top = padding.value.dp
-                )
-                .fillMaxWidth()
-                .height(90.dp),
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = "",
-            contentScale = ContentScale.Inside
-        )
-
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
-                .wrapContentSize()
-                .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(100.dp))
-            Content(
-                isSelectRegionClicked = { isSelectRegionClicked() },
-                selectedRegionName = { selectedRegionName() },
-                summonerName = summonerName,
-                isAccountNotFound = isAccountNotFound,
-                onSelectRegion = { onSelectRegionButtonClicked.invoke() },
-                onStartButtonClicked = { onStartButtonClicked(summonerName.text) },
-                onNameValueChange = { summonerName = it }
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentHeight(),
+                contentScale = ContentScale.FillBounds,
+                painter = painterResource(id = R.drawable.ic_login_header_background),
+                contentDescription = "login_header_background"
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color(0x00242731),
+                                Color(0xFF242731)
+                            ),
+                            endY = with(LocalDensity.current) {
+                                188.dp.toPx()
+                            }
+                        )
+                    )
             )
         }
-
-        AnimatedVisibility(
-            modifier = Modifier.align(Alignment.Center),
-            visible = isLoading,
-            enter = scaleIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-            exit = scaleOut()
-        ) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-
     }
 }
 
 @Composable
-fun Content(
-    isSelectRegionClicked: () -> Boolean,
-    selectedRegionName: () -> String,
-    summonerName: TextFieldValue,
-    isAccountNotFound: () -> Boolean,
-    onSelectRegion: () -> Unit,
-    onStartButtonClicked: () -> Unit,
-    onNameValueChange: (name: TextFieldValue) -> Unit,
-
+fun WelcomeContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.7f)
+            .padding(top = 92.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-    AnimatedVisibility(
-        visible = !isSelectRegionClicked(),
-        enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
-        exit = fadeOut(animationSpec = tween(durationMillis = 500))
-    ) {
-        Column {
-            SelectRegionButton(
-                selectedRegionName = { selectedRegionName() },
-                onSelectRegion = { onSelectRegion.invoke() }
-            )
-            if (selectedRegionName().isNotBlank()) {
-                Spacer(modifier = Modifier.height(20.dp))
-                SummonerNameTextField(
-                    summonerName = summonerName,
-                    isAccountNotFound = isAccountNotFound,
-                    onSummonerNameChanged = onNameValueChange,
-                )
-                StartButton { onStartButtonClicked.invoke() }
-            }
-        }
+        WelcomeText()
+        Spacer(Modifier.height(50.dp))
+//        WelcomeUserInputs()
     }
 }
+
 
 
 @Composable
@@ -243,12 +156,14 @@ fun RegionsBottomSheet(
             .fillMaxWidth()
             .wrapContentHeight()
             .backgroundWithBorder(
-                borderGradientColors = arrayListOf(0xFFCA9D4B,0x80242731),
-                borderWidth =  0.5.dp
+                borderGradientColors = arrayListOf(0xFFCA9D4B, 0x80242731),
+                borderWidth = 0.5.dp
             )
     ) {
         RegionsBottomSheetHeader(
-            Modifier.fillMaxWidth().height(75.dp),
+            Modifier
+                .fillMaxWidth()
+                .height(75.dp),
             onCloseClick = { onCloseClick.invoke() }
         )
         RegionsBottomSheetList(onRegionClick = {
@@ -303,5 +218,9 @@ fun RegionsBottomSheetList(onRegionClick: (region: Regions) -> Unit) {
 @Preview
 @Composable
 fun LoginScreenPreview() {
-
+    LoginContent(
+        state = LoginState(),
+        onEvent = {},
+        onContinue = {}
+    )
 }

@@ -11,7 +11,6 @@ class ChampionDetailsRepositoryImpl @Inject constructor(
     private val dao: ChampionDetailsDao,
 ): ChampionDetailsRepository {
     override suspend fun getChampionDetails(fromLocal: Boolean, name: String): ChampionDetailDto? {
-
         return if (fromLocal) dao.getChampionInfo(name)
         else api.getChampionDetails(name).data.map { it.value }[0]
     }

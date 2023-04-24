@@ -20,7 +20,7 @@ import com.lms.worldoflol.utils.backgroundWithBorder
 fun BoxScope.BackButton(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
-    onBackPressed: () -> Unit,
+    onBackPressed: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
@@ -43,10 +43,6 @@ fun BoxScope.BackButton(
 
 @Preview
 @Composable
-fun BackButtonPreview() {
-    Box {
-        BackButton(Modifier) {
-            
-        }
-    }
+fun BoxScope.BackButtonPreview() {
+    BackButton(Modifier)
 }

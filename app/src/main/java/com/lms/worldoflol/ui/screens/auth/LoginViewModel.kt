@@ -38,17 +38,17 @@ class LoginViewModel @Inject constructor(
             is OnRefresh -> {
                 _state.update { LoginState() }
             }
-            is OnSelectRegionClick -> {
-                _state.update { it.copy(isSelectRegionClicked = true) }
-            }
-            is OnRegionClick -> {
-                _state.update {
-                    it.copy(
-                        selectedRegionName = event.region,
-                        isSelectRegionClicked = false
-                    )
-                }
-            }
+//            is OnSelectRegionClick -> {
+//                _state.update { it.copy(isSelectRegionClicked = true) }
+//            }
+//            is OnRegionClick -> {
+//                _state.update {
+//                    it.copy(
+//                        selectedRegionName = event.region,
+//                        isSelectRegionClicked = false
+//                    )
+//                }
+//            }
         }
     }
 

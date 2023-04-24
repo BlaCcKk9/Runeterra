@@ -98,11 +98,12 @@ fun MainNavGraph(
             route = Screen.MATCH_DETAIL.route,
             arguments = Screen.MATCH_DETAIL.arguments,
             onBackPressed = { onBackPressed }
-        ) { entry ->
+        ) {
             bottomBarVisibility(false)
-            val region = entry.arguments?.getString("region") ?: ""
-            val matchId = entry.arguments?.getString("matchId") ?: ""
-            val puuid = entry.arguments?.getString("puuid") ?: ""
+            val region = it.arguments?.getString("region") ?: ""
+            val matchId = it.arguments?.getString("matchId") ?: ""
+            val puuid = it.arguments?.getString("puuid") ?: ""
+
             MatchDetailScreen(
                 region = region,
                 matchId = matchId,

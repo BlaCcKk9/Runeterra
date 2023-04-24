@@ -36,6 +36,8 @@ fun textStyle(
     color: Long = 0x00000000,
     gradient: List<Long> = listOf(),
     fontWeight: Int = 400,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    lineHeight: TextUnit = TextUnit.Unspecified,
     textAlign: TextAlign = TextAlign.Center,
     fontStyle: FontStyle = FontStyle.Normal
 ) = if (gradient.isEmpty()) {
@@ -45,6 +47,8 @@ fun textStyle(
         fontWeight = FontWeight(fontWeight),
         fontStyle = fontStyle,
         fontSize = size,
+        letterSpacing = letterSpacing,
+        lineHeight = lineHeight,
         color = Color(color)
     )
 } else {
@@ -56,6 +60,8 @@ fun textStyle(
         fontWeight = FontWeight(fontWeight),
         fontStyle = fontStyle,
         fontSize = 16.sp,
+        letterSpacing = letterSpacing,
+        lineHeight = lineHeight,
         brush = Brush.verticalGradient(gradientColors)
     )
 }
