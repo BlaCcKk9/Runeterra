@@ -35,37 +35,28 @@ private fun entriesMapper(
     listOfEntries: List<EntryDto>
 ): List<Entry?> {
 
-    val entries = ArrayList<Entry?>()
     var soloEntry: Entry? = null
     var flexEntry: Entry? = null
 
-    val soloAndFlexEntries = listOfEntries.dropWhile { entry ->
+    val entries = listOfEntries.dropWhile { entry ->
         entry.queueType != QueueType.SOLO &&
                 entry.queueType != QueueType.FLEX
     }
 
-    when (soloAndFlexEntries.size) {
+    when (entries.size) {
         2 -> {
-            soloEntry = soloAndFlexEntries[0].toEntry()
-            flexEntry = soloAndFlexEntries[1].toEntry()
+            soloEntry = entries[0].toEntry()
+            flexEntry = entries[1].toEntry()
         }
 
         else -> {
-            if (soloAndFlexEntries.isNotEmpty()) {
-                if (soloAndFlexEntries[0].queueType == QueueType.SOLO)
-                    soloEntry = soloAndFlexEntries[0].toEntry()
-                else flexEntry = soloAndFlexEntries[0].toEntry()
+            if (entries.isNotEmpty()) {
+                if (entries[0].queueType == QueueType.SOLO) soloEntry = entries[0].toEntry()
+                else flexEntry = entries[0].toEntry()
             }
         }
     }
 
-    entries.addAll(
-        arrayListOf(
-            soloEntry,
-            flexEntry
-        )
-    )
-
-    return entries.toList()
+    return arrayListOf(soloEntry, flexEntry)
 }
 

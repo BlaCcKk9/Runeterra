@@ -96,7 +96,6 @@ fun ProfileDetailScreen(
             onMatchClicked = { navigateToMatchDetail(it) },
             onBackPressed = { onBackPressed() }
         )
-
     }
 }
 
