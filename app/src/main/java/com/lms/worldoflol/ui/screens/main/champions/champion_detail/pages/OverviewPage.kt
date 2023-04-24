@@ -112,7 +112,6 @@ fun ChampionDetailLore(
         style = textStyle15(color = 0x80EEE2CC)
     )
     Spacer(modifier = Modifier.height(8.dp))
-
     if (readMoreVisible)
         BlurbText(
             blurb = blurb,
@@ -141,7 +140,12 @@ fun BlurbText(
     Text(
         text = buildAnnotatedString {
             append(blurb)
-            withStyle(style = SpanStyle(color = Color(0xFFF6C97F), fontSize = 16.sp)) {
+            withStyle(
+                style = SpanStyle(
+                    color = Color(0xFFF6C97F),
+                    fontSize = 16.sp
+                )
+            ) {
                 append(" Read more")
             }
         },

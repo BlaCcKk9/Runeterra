@@ -162,20 +162,19 @@ fun SearchBody(
                 targetState = onSearchResult,
                 transitionSpec = { getSearchResultAnimation(targetState) }
             ) { shouldShowSearchResultContent ->
-                if (shouldShowSearchResultContent) {
+                if (shouldShowSearchResultContent)
                     SearchResultContent(
                         searchResult = result,
                         isLoading = isLoading,
                         error = error,
                         onRefresh = {}
                     ) { onSummonerClick(it) }
-                } else {
+                else
                     RecentSearchContent(
                         recentSearches = recentSearches,
                         onRemove = { onRemove(it) },
                         onRecentSearchClick = { onSummonerClick(it) }
                     )
-                }
             }
         }
     }
@@ -250,5 +249,5 @@ fun EmptyRecentSearchContent() {
 @Preview
 @Composable
 fun SearchScreenPreview() {
-    SearchScreen() {}
+    SearchScreen {}
 }

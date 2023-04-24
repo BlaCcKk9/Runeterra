@@ -48,10 +48,7 @@ fun ErrorContent(
 ) {
     when (error) {
         ErrorType.HTTP -> {}
-        ErrorType.NotFound -> {
-            NotFoundContent()
-        }
-
+        ErrorType.NotFound -> NotFoundContent()
         ErrorType.NoInternetConnection -> {
             NoInternetConnectionScreen {
                 onRefreshClicked()

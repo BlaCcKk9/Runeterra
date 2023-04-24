@@ -5,16 +5,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.lms.worldoflol.common.Animations
-import com.lms.worldoflol.common.Param
 import com.lms.worldoflol.domain.model.remote.Summoner
-import com.lms.worldoflol.ui.params.Arguments
 import com.lms.worldoflol.ui.screens.main.MainScreen
 import com.lms.worldoflol.utils.Moshi
 

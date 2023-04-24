@@ -22,12 +22,12 @@ class GetSummonerUseCase @Inject constructor(
             emit(Resource.Loading())
             val summoner = repository.getSummoner(url(region, name)).toSummoner(region)
             emit(Resource.Success(summoner))
-        }
-        catch (e: IOException) { emit(Resource.Error(ErrorType.NoInternetConnection)) }
-        catch (e: HttpException) {
+        } catch (e: IOException) {
+            emit(Resource.Error(ErrorType.NoInternetConnection))
+        } catch (e: HttpException) {
             when (e.code()) {
-                404 -> { emit(Resource.Error(ErrorType.NotFound)) }
-                else -> { emit(Resource.Error(ErrorType.HTTP)) }
+                404 -> emit(Resource.Error(ErrorType.NotFound))
+                else -> emit(Resource.Error(ErrorType.HTTP))
             }
         }
     }

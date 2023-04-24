@@ -2,7 +2,6 @@ package com.lms.worldoflol.di
 
 import android.app.Application
 import androidx.room.Room
-import com.lms.worldoflol.data.local.dao.ChampionsTypeConverter
 import com.lms.worldoflol.data.local.database.SummonerDatabase
 import com.lms.worldoflol.data.local.database.ChampionsDatabase
 import com.lms.worldoflol.data.remote.WorlOfLolApi
