@@ -258,7 +258,7 @@ fun RowScope.FilterDifficultiesBox(
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (selectedDifficulty != null) {
+            if (selectedDifficulty != null)
                 Image(
                     painter = painterResource(id = difficultyIcon),
                     modifier = Modifier
@@ -267,9 +267,9 @@ fun RowScope.FilterDifficultiesBox(
                     contentScale = ContentScale.FillBounds,
                     contentDescription = "difficulty_icon"
                 )
-            } else {
+            else
                 Text(text = "Difficulties", style = textStyle14(color = 0x4DEEE2CC))
-            }
+
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_down),

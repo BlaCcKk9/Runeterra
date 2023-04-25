@@ -46,7 +46,7 @@ import androidx.compose.runtime.setValue
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberAnimatedNavController(),
-    summoner: Summoner,
+    summoner: Summoner?,
 ) {
     var showBottomBar by remember { mutableStateOf(false) }
     var bottomBarAvailable by remember { mutableStateOf(true) }

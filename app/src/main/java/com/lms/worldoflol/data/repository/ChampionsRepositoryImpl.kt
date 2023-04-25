@@ -1,14 +1,14 @@
 package com.lms.worldoflol.data.repository
 
 import com.lms.worldoflol.data.local.dao.ChampionsDao
-import com.lms.worldoflol.data.remote.WorlOfLolApi
+import com.lms.worldoflol.data.remote.RuneterraApi
 import com.lms.worldoflol.data.remote.dto.ChampionsDto
 import com.lms.worldoflol.domain.model.remote.Champion
 import com.lms.worldoflol.domain.repository.ChampionsRepository
 import javax.inject.Inject
 
 class ChampionsRepositoryImpl @Inject constructor(
-    private val api: WorlOfLolApi,
+    private val api: RuneterraApi,
     private val dao: ChampionsDao,
 ): ChampionsRepository {
 

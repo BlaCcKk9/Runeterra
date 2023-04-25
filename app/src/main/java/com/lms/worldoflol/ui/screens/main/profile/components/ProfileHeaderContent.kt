@@ -21,12 +21,13 @@ import com.lms.worldoflol.common.shimmerEffect
 import com.lms.worldoflol.ui.theme.skeleton_color_40
 import com.lms.worldoflol.ui.theme.textStyle28
 import com.lms.worldoflol.utils.backgroundWithBorder
-
+internal const val PROFILE_ICON_URL = "http://ddragon.leagueoflegends.com/cdn/12.21.1/img/profileicon/"
 @Composable
 fun ProfileHeaderContent(
     modifier: Modifier = Modifier,
     profileIconId: String,
-    profileName: String
+    profileName: String,
+    profileIcon: String = "$PROFILE_ICON_URL$profileIconId.png"
 ) {
     Box(modifier = modifier) {
         Row(
@@ -37,7 +38,7 @@ fun ProfileHeaderContent(
             verticalAlignment = Alignment.Bottom
         ) {
             SubcomposeAsyncImage(
-                model = "http://ddragon.leagueoflegends.com/cdn/12.21.1/img/profileicon/${profileIconId}.png",
+                model = profileIcon,
                 loading = {
                     Spacer(modifier = Modifier
                         .fillMaxSize()
@@ -51,7 +52,6 @@ fun ProfileHeaderContent(
                     .size(size = 120.dp)
                     .backgroundWithBorder(borderColor = 0xFFCA9D4B)
             )
-
             Text(
                 text = profileName,
                 style = textStyle28(color = 0xFFEEE2CC),

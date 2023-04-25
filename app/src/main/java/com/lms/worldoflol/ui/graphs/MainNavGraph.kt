@@ -31,7 +31,7 @@ import com.lms.worldoflol.utils.Moshi
 @Composable
 fun MainNavGraph(
     navHostController: NavHostController,
-    summoner: Summoner,
+    summoner: Summoner?,
     bottomBarVisibility: (isVisible: Boolean) -> Unit
 ) {
 
@@ -76,7 +76,7 @@ fun MainNavGraph(
             onBackPressed = { onBackPressed }
         ) { entry ->
             val summonerJson = entry.arguments?.getString("profile")
-            val summoner = moshi.fromJson(summonerJson!!)
+            val summoner = moshi.fromJson(summonerJson)
             bottomBarVisibility(false)
             ProfileDetailScreen(
                 summoner = summoner,

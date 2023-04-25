@@ -60,14 +60,12 @@ private fun DifficultysItem(
     difficulty: Difficulty,
     onItemClick: (difficulty: Difficulty) -> Unit
 ) {
-    val difficultyIcon = difficulty.icon
-
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = difficultyIcon),
+            painter = painterResource(id = difficulty.icon),
             modifier = Modifier
                 .padding(bottom = 30.dp)
                 .height(8.dp)

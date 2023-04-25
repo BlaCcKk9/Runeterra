@@ -76,7 +76,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
-    summoner: Summoner,
+    summoner: Summoner?,
     bottomBarVisibility: (isVisible: Boolean) -> Unit,
     navigateToMatchDetail: (Match) -> Unit,
     navigateToAllGames: (String, String) -> Unit
@@ -90,9 +90,10 @@ fun ProfileScreen(
     LaunchedEffect(key1 = state.matches == null) {
         if (firstCall) {
             firstCall = false
-            scope.launch {
-                viewModel.onEvent(ProfileEvents.FetchProfile(summoner))
-            }
+            if (summoner != null)
+                scope.launch {
+                    viewModel.onEvent(ProfileEvents.FetchProfile(summoner))
+                }
         }
     }
 
@@ -101,28 +102,30 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(color = Color(0xFF242731))
     ) {
-        bottomBarVisibility(true)
-        if (state.entries != null) {
-            ProfileContent(
-                entries = state.entries ?: listOf(),
-                matches = state.matches ?: listOf(),
-                isMatchLoading = state.isMatchesLoading,
-                summoner = state.summoner,
-                onMatchClicked = { navigateToMatchDetail(it) },
-                onSeeAllClicked = { navigateToAllGames(summoner.region, summoner.puuid) },
-                onRefresh = {
-                    scope.launch {
-                        viewModel.onEvent(ProfileEvents.Refresh(summoner))
+        if (summoner != null) {
+            bottomBarVisibility(true)
+            if (state.entries != null) {
+                ProfileContent(
+                    entries = state.entries ?: listOf(),
+                    matches = state.matches ?: listOf(),
+                    isMatchLoading = state.isMatchesLoading,
+                    summoner = state.summoner,
+                    onMatchClicked = { navigateToMatchDetail(it) },
+                    onSeeAllClicked = { navigateToAllGames(summoner.region, summoner.puuid) },
+                    onRefresh = {
+                        scope.launch {
+                            viewModel.onEvent(ProfileEvents.Refresh(summoner))
+                        }
+                    },
+                    onLogout = {
+                        firstCall = true
+                        scope.cancel()
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
                     }
-                },
-                onLogout = {
-                    firstCall = true
-                    scope.cancel()
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
-                }
-            )
-        }
+                )
+            }
+        } else Box(modifier = Modifier)
 
         AnimatedVisibility(
             visible = state.error != null,
@@ -134,7 +137,7 @@ fun ProfileScreen(
                     NoInternetConnectionScreen {
                         bottomBarVisibility(state.error == null)
                         scope.launch {
-                            viewModel.onEvent(ProfileEvents.Refresh(summoner))
+                            viewModel.onEvent(ProfileEvents.Refresh(summoner!!))
                         }
                     }
                 }
@@ -213,7 +216,6 @@ fun ProfileContent(
                 .padding(top = 10.dp)
                 .fillMaxWidth(),
         )
-
         TabRow(
             tabs = profileTabs,
             pagerState = pagerState
@@ -222,7 +224,6 @@ fun ProfileContent(
                 pagerState.animateScrollToPage(tabIndex)
             }
         }
-
         ProfilePager(
             count = profileTabs.size,
             pagerState = pagerState,

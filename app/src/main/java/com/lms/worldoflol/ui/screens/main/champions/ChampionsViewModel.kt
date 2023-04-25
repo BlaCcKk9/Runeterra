@@ -45,7 +45,6 @@ class ChampionsViewModel @Inject constructor(
                 this.query = event.query
                 filterChampions()
             }
-
             is ChampionsEvents.FilterChampionsRole -> {
                 _state.value.selectedRole = event.role
                 this.role = event.role

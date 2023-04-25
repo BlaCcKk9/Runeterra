@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-const val BASE_SPLASH_URL = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/"
-const val BASE_SPELL_URL = "https://ddragon.leagueoflegends.com/cdn/12.23.1/img/spell/"
-const val BASE_PASSIVE_URL = "https://ddragon.leagueoflegends.com/cdn/12.23.1/img/passive/"
+internal const val BASE_SPLASH_URL = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/"
+internal const val BASE_SPELL_URL = "https://ddragon.leagueoflegends.com/cdn/12.23.1/img/spell/"
+internal const val BASE_PASSIVE_URL = "https://ddragon.leagueoflegends.com/cdn/12.23.1/img/passive/"
 
 class GetChampionDetailsUseCase @Inject constructor(
     private val repository: ChampionDetailsRepository

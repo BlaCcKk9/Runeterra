@@ -40,9 +40,7 @@ fun TabRow(
     val density = LocalDensity.current
     val tabWidths = remember {
         val tabWidthStateList = mutableStateListOf<Dp>()
-        repeat(tabs.size) {
-            tabWidthStateList.add(0.dp)
-        }
+        repeat(tabs.size) { tabWidthStateList.add(0.dp) }
         tabWidthStateList
     }
     ScrollableTabRow(
@@ -73,9 +71,8 @@ fun TabRow(
                     Text(
                         text = tabName,
                         style = textStyle14(color = selectedTabTextColor),
-                        onTextLayout = { textLayoutResult ->
-                            tabWidths[tabIndex] =
-                                with(density) { textLayoutResult.size.width.toDp() }
+                        onTextLayout = {
+                            tabWidths[tabIndex] = with(density) { it.size.width.toDp() }
                         }
                     )
                 }
@@ -88,10 +85,6 @@ fun Modifier.tabIndicatorOffset(
     currentTabPosition: TabPosition,
     tabWidth: Dp
 ): Modifier = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "customTabIndicatorOffset"
-        value = currentTabPosition
-    }
 ) {
     val currentTabWidth by animateDpAsState(
         targetValue = tabWidth,

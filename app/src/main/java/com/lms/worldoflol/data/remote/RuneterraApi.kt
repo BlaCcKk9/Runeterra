@@ -10,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Url
 
-interface WorlOfLolApi {
+interface RuneterraApi {
     @GET
     suspend fun getSummoner(@Url url: String) : SummonerDto
 

@@ -48,7 +48,7 @@ fun WelcomeUserInputs(
                 summonerName = summonerName,
                 isInputError = isInputError,
                 onSummonerNameChanged = { onSummonerNameChanged(it) },
-                onClearClicked = { onClearClicked },
+                onClearClicked = { onClearClicked() },
                 onSelectRegionButtonClicked = { onSelectRegionClicked() },
                 onStartClicked = { onStartClicked() }
             )
@@ -132,6 +132,14 @@ fun SummonerNameInput(
             .padding(start = 9.dp, end = 20.dp),
         contentAlignment = Alignment.CenterStart
     ) {
+        TextField(
+            value = summonerName,
+            onValueChange = { onTextChanged(it) },
+            singleLine = true,
+            textStyle = textStyle(color = 0xFFEEE2CC, textAlign = TextAlign.Start),
+            colors = getTextfieldColors(),
+        )
+
         if (isError)
             Icon(
                 imageVector = ImageVector.vectorResource(id = com.lms.worldoflol.R.drawable.ic_text_clear),
@@ -141,13 +149,6 @@ fun SummonerNameInput(
                     .align(Alignment.CenterEnd)
                     .clickable { onClearClicked() }
             )
-        TextField(
-            value = summonerName,
-            onValueChange = { onTextChanged(it) },
-            singleLine = true,
-            textStyle = textStyle(color = 0xFFEEE2CC, textAlign = TextAlign.Start),
-            colors = getTextfieldColors(),
-        )
     }
 }
 

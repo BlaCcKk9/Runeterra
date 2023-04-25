@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.lms.worldoflol.data.local.database.SummonerDatabase
 import com.lms.worldoflol.data.local.database.ChampionsDatabase
-import com.lms.worldoflol.data.remote.WorlOfLolApi
+import com.lms.worldoflol.data.remote.RuneterraApi
 import com.lms.worldoflol.data.repository.ChampionDetailsRepositoryImpl
 import com.lms.worldoflol.data.repository.ChampionsRepositoryImpl
 import com.lms.worldoflol.data.repository.MatchesRepositoryImpl
@@ -33,19 +33,19 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideWorlOfLolApi(): WorlOfLolApi {
+    fun provideWorlOfLolApi(): RuneterraApi {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://api.riotgames.com/lol/")
             .build()
-            .create(WorlOfLolApi::class.java)
+            .create(RuneterraApi::class.java)
     }
 
     // summoners
 
     @Provides
     @Singleton
-    fun provideSummonerRepository(api: WorlOfLolApi): SummonerRepository {
+    fun provideSummonerRepository(api: RuneterraApi): SummonerRepository {
         return SummonerRepositoryImpl(api)
     }
 
@@ -79,13 +79,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideChampionsRepository(api: WorlOfLolApi, db: ChampionsDatabase): ChampionsRepository {
+    fun provideChampionsRepository(api: RuneterraApi, db: ChampionsDatabase): ChampionsRepository {
         return ChampionsRepositoryImpl(api, db.championsDao)
     }
 
     @Provides
     @Singleton
-    fun provideChampionDetailsRepository(api: WorlOfLolApi, db: ChampionsDatabase): ChampionDetailsRepository{
+    fun provideChampionDetailsRepository(api: RuneterraApi, db: ChampionsDatabase): ChampionDetailsRepository{
         return ChampionDetailsRepositoryImpl(api, db.championDetailsDao)
     }
 
@@ -102,7 +102,7 @@ object AppModule {
     // matches
     @Provides
     @Singleton
-    fun provideMatchesRepository(api: WorlOfLolApi): MatchesRepository {
+    fun provideMatchesRepository(api: RuneterraApi): MatchesRepository {
         return MatchesRepositoryImpl(api)
     }
 }

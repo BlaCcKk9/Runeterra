@@ -68,9 +68,6 @@ private fun RoleItem(
     role: Roles,
     onItemClick: (role: Roles) -> Unit
 ) {
-    val roleName = role.name
-    val roleIcon = role.icon
-
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -78,14 +75,14 @@ private fun RoleItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = roleIcon),
+            painter = painterResource(id = role.icon),
             modifier = Modifier.size(24.dp),
             contentScale = ContentScale.Crop,
             contentDescription = "role icon"
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            text = roleName,
+            text = role.name,
             style = textStyle16(color = 0xFFEEE2CC, fontStyle = FontStyle.Italic),
         )
     }

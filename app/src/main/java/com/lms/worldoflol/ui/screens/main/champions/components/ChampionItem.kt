@@ -8,11 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,24 +25,20 @@ import com.lms.worldoflol.ui.theme.textStyle18
 import com.lms.worldoflol.utils.backgroundWithBorder
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.FilterQuality
+import coil.Coil
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.util.CoilUtils
 import com.lms.worldoflol.common.shimmerEffect
 import com.lms.worldoflol.ui.theme.skeleton_color_40
 import com.lms.worldoflol.ui.theme.skeleton_color_60
-import com.lms.worldoflol.utils.loadPicture
 
 @Composable
 fun ChampionItem(
     champion: Champion,
     onChampionClick: (String) -> Unit
 ) {
-    var isImageLoading by remember {
-        mutableStateOf(true)
-    }
-
     Box(
         modifier = Modifier
             .aspectRatio(0.78f)
@@ -56,21 +48,19 @@ fun ChampionItem(
             .clickable { onChampionClick(champion.id) }
     ) {
 
-        SubcomposeAsyncImage(
+        val painter = rememberAsyncImagePainter(
             model = champion.image,
-            loading = {
-                isImageLoading = true
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .shimmerEffect(backgroundColor = skeleton_color_40)
-                )
-            },
-            onSuccess = { isImageLoading = false },
+            contentScale = ContentScale.FillBounds,
+            filterQuality = FilterQuality.High
+        )
+
+        Image(
+            painter = painter,
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
         )
+
 
         Box(
             modifier = Modifier
@@ -79,26 +69,14 @@ fun ChampionItem(
                 .align(Alignment.BottomCenter),
             contentAlignment = Alignment.Center
         ) {
-            if (isImageLoading) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shimmerEffect(backgroundColor = skeleton_color_60),
-                    painter = painterResource(id = R.drawable.ic_champion_item_name_background),
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = "background"
-                )
-            } else {
-                Image(
-                    modifier = Modifier.fillMaxWidth(),
-                    painter = painterResource(id = R.drawable.ic_rectangle),
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = "background"
-                )
-                Text(text = champion.name, style = textStyle18(color = 0xCCEEE2CC))
-            }
+            Image(
+                modifier = Modifier.fillMaxWidth(),
+                painter = painterResource(id = R.drawable.ic_rectangle),
+                contentScale = ContentScale.FillBounds,
+                contentDescription = "background"
+            )
+            Text(text = champion.name, style = textStyle18(color = 0xCCEEE2CC))
         }
-
     }
 }
 

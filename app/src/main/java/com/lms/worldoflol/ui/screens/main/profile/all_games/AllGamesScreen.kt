@@ -131,7 +131,6 @@ fun FilterGameSection() {
     }
 }
 
-
 @Composable
 fun AllGamesHeader() {
     Box(

@@ -30,10 +30,9 @@ class LoginViewModel @Inject constructor(
         )
 
     fun onEvent(event: LoginEvent) {
-
         when (event) {
             is OnLoginClick -> {
-                getSummoner(event.region, event.summonerName, event.onSuccess)
+                getSummoner(event.region, event.summonerName)
             }
             is OnRefresh -> {
                 _state.update { LoginState() }
@@ -55,25 +54,21 @@ class LoginViewModel @Inject constructor(
     private fun getSummoner(
         region: String,
         summonerName: String,
-        onSuccess: (summoner: Summoner) -> Unit
     ) {
-        fetchSummoner(summonerName, region, onSuccess)
+        fetchSummoner(summonerName, region)
     }
 
     private fun fetchSummoner(
         summonerName: String,
         region: String,
-        onSuccess: (summoner: Summoner) -> Unit
     ) {
         getSummonerUseCase(region, summonerName).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    result.data?.apply {
-                        onSuccess(this)
-                    }
+                    _state.update { it.copy(summoner = result.data) }
                 }
                 is Resource.Error -> {
-                    _state.update { it.copy(error = result.error, isLoading = false) }
+                    _state.update { it.copy(error = result.error, isLoading = false, summoner = null) }
                 }
                 is Resource.Loading -> {
                     _state.update { it.copy(isLoading = true) }

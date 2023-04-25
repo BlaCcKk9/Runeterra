@@ -1,12 +1,10 @@
 package com.lms.worldoflol.ui.screens.main.profile.match_detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lms.worldoflol.common.Resource
 import com.lms.worldoflol.domain.use_case.get_matches.GetMatchesUseCase
 import com.lms.worldoflol.domain.use_case.get_summoner.GetSummonerUseCase
-import com.lms.worldoflol.ui.screens.main.search.SearchEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

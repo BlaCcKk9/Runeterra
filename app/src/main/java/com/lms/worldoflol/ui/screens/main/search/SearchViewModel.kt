@@ -1,13 +1,8 @@
 package com.lms.worldoflol.ui.screens.main.search
 
-import android.util.Log
-import androidx.compose.ui.text.toLowerCase
-import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lms.worldoflol.common.Resource
-import com.lms.worldoflol.common.getBaseUrl
-import com.lms.worldoflol.common.getSummonerUrl
 import com.lms.worldoflol.domain.model.remote.Summoner
 import com.lms.worldoflol.domain.use_case.get_summoner.GetSummonerUseCase
 import com.lms.worldoflol.domain.use_case.summoner_entitiy.SummonersUseCases
@@ -15,9 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -85,7 +77,8 @@ class SearchViewModel @Inject constructor(
                     showTitle = showTitle
                 )
             }
-        } else getRecentSearches()
+        }
+        else getRecentSearches()
     }
 
     private fun getRecentSearches() {

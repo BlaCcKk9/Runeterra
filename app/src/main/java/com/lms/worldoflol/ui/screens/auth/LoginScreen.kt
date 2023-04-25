@@ -1,5 +1,7 @@
 package com.lms.worldoflol.ui.screens.auth
 
+import android.util.Log
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,12 +11,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,8 +27,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lms.worldoflol.R
+import com.lms.worldoflol.common.ErrorType
 import com.lms.worldoflol.domain.model.remote.Summoner
 import com.lms.worldoflol.ui.screens.auth.components.*
+import com.lms.worldoflol.ui.theme.textStyle18
 import com.lms.worldoflol.ui.theme.textStyle24
 import com.lms.worldoflol.utils.backgroundWithBorder
 import kotlinx.coroutines.launch
@@ -31,7 +38,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun LoginScreen(
-    navigateMainScreen: (summoner: Summoner) -> Unit
+    navigateMainScreen: (summoner: Summoner?) -> Unit
 ) {
     val viewModel = hiltViewModel<LoginViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -43,28 +50,38 @@ fun LoginScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginContent(
     state: LoginState,
     onEvent: (LoginEvent) -> Unit,
-    onContinue: (Summoner) -> Unit
+    onContinue: (Summoner?) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.Expanded },
+        animationSpec = tween(500),
         skipHalfExpanded = true
     )
+    val keyboardController = LocalSoftwareKeyboardController.current!!
+    val focusManager = LocalFocusManager.current
+
     var selectedRegion by remember { mutableStateOf("") }
     var summonerName by remember { mutableStateOf("Miyvarxaaar") }
     var isInputError by remember { mutableStateOf(false) }
     var shouldShowFindSummoner by remember { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = state) {
+        state.summoner?.let { onContinue(it) }
+        state.error?.let { if (it is ErrorType.NotFound) isInputError = true }
+    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
+        scrimColor = Color(0x80242731),
+        sheetBackgroundColor = Color(0xFF0E141B),
         sheetContent = {
             RegionsBottomSheet(
                 onCloseClick = { coroutineScope.launch { modalSheetState.hide() } },
@@ -80,8 +97,16 @@ fun LoginContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(360.dp),
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 painter = painterResource(id = R.drawable.ic_login_header_background),
+                contentDescription = "login_header_background"
+            )
+            Image(
+                modifier = Modifier
+                    .padding(top = 100.dp)
+                    .align(Alignment.TopCenter),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(id = R.drawable.ic_welcome_pins),
                 contentDescription = "login_header_background"
             )
             Spacer(
@@ -104,8 +129,21 @@ fun LoginContent(
                 summonerName = summonerName,
                 isInputError = isInputError,
                 shouldShowFindSummoner = shouldShowFindSummoner,
-                loginAsSummoner =  { shouldShowFindSummoner = true },
-                loginAsNonSummoner = {  },
+                onSummonerNameChanged = { summonerName = it },
+                onSelectRegionButtonClicked = {
+                    coroutineScope.launch {
+                        focusManager.clearFocus()
+                        keyboardController.hide()
+                        modalSheetState.show()
+                    }
+                },
+                onClearClicked = {
+                    summonerName = ""
+                    isInputError = false
+                },
+                loginAsSummoner = { shouldShowFindSummoner = true },
+                loginAsNonSummoner = { onContinue(null) },
+                onContinue = { onEvent(LoginEvent.OnLoginClick(selectedRegion, summonerName)) }
             )
         }
     }
@@ -117,8 +155,12 @@ fun WelcomeContent(
     summonerName: String,
     isInputError: Boolean,
     shouldShowFindSummoner: Boolean,
+    onSummonerNameChanged: (String) -> Unit,
+    onSelectRegionButtonClicked: () -> Unit,
+    onClearClicked: () -> Unit,
     loginAsSummoner: () -> Unit,
-    loginAsNonSummoner: () -> Unit
+    loginAsNonSummoner: () -> Unit,
+    onContinue: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -134,12 +176,12 @@ fun WelcomeContent(
             summonerName = summonerName,
             isInputError = isInputError,
             shouldShowFindSummoner = shouldShowFindSummoner,
-            loginAsSummoner =  { loginAsSummoner()},
+            loginAsSummoner = { loginAsSummoner() },
             loginAsNonSummoner = { loginAsNonSummoner() },
-            onSummonerNameChanged = {  },
-            onClearClicked = {  },
-            onSelectRegionClicked = {  },
-            onStartClicked = {  }
+            onSummonerNameChanged = { onSummonerNameChanged(it) },
+            onClearClicked = { onClearClicked() },
+            onSelectRegionClicked = { onSelectRegionButtonClicked() },
+            onStartClicked = { onContinue() }
         )
     }
 }
@@ -186,7 +228,7 @@ fun RegionsBottomSheetHeader(modifier: Modifier, onCloseClick: () -> Unit) {
         )
         Text(
             text = "Select Region",
-            style = textStyle24(color = 0xFFF6C97F),
+            style = textStyle18(color = 0xFFF6C97F),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 20.dp)

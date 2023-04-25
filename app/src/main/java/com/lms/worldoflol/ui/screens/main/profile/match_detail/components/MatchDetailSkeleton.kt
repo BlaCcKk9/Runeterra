@@ -107,7 +107,6 @@ fun MatchDetailSkeleton() {
             }
         }
 
-
         Spacer(modifier = Modifier.height(20.dp))
         Box(
             modifier = Modifier
@@ -203,7 +202,6 @@ fun MatchDetailSkeleton() {
 
                     }
                 }
-
 
                 Column(
                     modifier = Modifier

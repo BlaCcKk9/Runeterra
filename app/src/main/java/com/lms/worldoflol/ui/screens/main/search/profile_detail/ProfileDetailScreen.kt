@@ -62,7 +62,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileDetailScreen(
     viewModel: ProfileDetailViewModel = hiltViewModel(),
-    summoner: Summoner,
+    summoner: Summoner?,
     onBackPressed: () -> Unit,
     navigateToMatchDetail: (Match) -> Unit,
 ) {
@@ -77,26 +77,29 @@ fun ProfileDetailScreen(
     )
 
     LaunchedEffect(key1 = state.entries?.isNotEmpty()) {
-        scope.launch {
-            viewModel.onEvent(ProfileDetailEvent.FetchProfile(summoner))
-        }
+        if (summoner != null)
+            scope.launch {
+                viewModel.onEvent(ProfileDetailEvent.FetchProfile(summoner))
+            }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFF242731))
-    ) {
-        ProfileContent(
-            entries = state.entries ?: listOf(),
-            matches = state.matches ?: listOf(),
-            isMatchLoading = state.isMatchesLoading,
-            isEntriesLoading = state.isEntnriesLoading,
-            summoner = summoner,
-            onMatchClicked = { navigateToMatchDetail(it) },
-            onBackPressed = { onBackPressed() }
-        )
-    }
+    if (summoner != null)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(0xFF242731))
+        ) {
+            ProfileContent(
+                entries = state.entries ?: listOf(),
+                matches = state.matches ?: listOf(),
+                isMatchLoading = state.isMatchesLoading,
+                isEntriesLoading = state.isEntnriesLoading,
+                summoner = summoner,
+                onMatchClicked = { navigateToMatchDetail(it) },
+                onBackPressed = { onBackPressed() }
+            )
+        }
+    else Box(modifier = Modifier)
 }
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)

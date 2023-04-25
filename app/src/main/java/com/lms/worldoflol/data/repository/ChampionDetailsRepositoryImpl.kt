@@ -1,13 +1,13 @@
 package com.lms.worldoflol.data.repository
 
 import com.lms.worldoflol.data.local.dao.ChampionDetailsDao
-import com.lms.worldoflol.data.remote.WorlOfLolApi
+import com.lms.worldoflol.data.remote.RuneterraApi
 import com.lms.worldoflol.data.remote.dto.ChampionDetailDto
 import com.lms.worldoflol.domain.repository.ChampionDetailsRepository
 import javax.inject.Inject
 
 class ChampionDetailsRepositoryImpl @Inject constructor(
-    private val api: WorlOfLolApi,
+    private val api: RuneterraApi,
     private val dao: ChampionDetailsDao,
 ): ChampionDetailsRepository {
     override suspend fun getChampionDetails(fromLocal: Boolean, name: String): ChampionDetailDto? {
