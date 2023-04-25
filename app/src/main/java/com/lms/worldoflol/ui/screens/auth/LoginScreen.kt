@@ -1,15 +1,5 @@
 package com.lms.worldoflol.ui.screens.auth
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,30 +16,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lms.worldoflol.R
-import com.lms.worldoflol.common.NoInternetConnectionScreen
-import com.lms.worldoflol.common.ErrorType
-import com.lms.worldoflol.common.RuneterraBottomSheet
-import com.lms.worldoflol.common.RuneterraContent
 import com.lms.worldoflol.domain.model.remote.Summoner
 import com.lms.worldoflol.ui.screens.auth.components.*
-import com.lms.worldoflol.ui.screens.auth.components.SelectRegionButton
-import com.lms.worldoflol.ui.theme.textStyle
 import com.lms.worldoflol.ui.theme.textStyle24
 import com.lms.worldoflol.utils.backgroundWithBorder
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalMaterialApi::class,
-    ExperimentalLifecycleComposeApi::class, ExperimentalAnimationApi::class
-)
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun LoginScreen(
     navigateMainScreen: (summoner: Summoner) -> Unit
@@ -72,21 +50,17 @@ fun LoginContent(
     onEvent: (LoginEvent) -> Unit,
     onContinue: (Summoner) -> Unit
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.Expanded },
         skipHalfExpanded = true
     )
+    var selectedRegion by remember { mutableStateOf("") }
+    var summonerName by remember { mutableStateOf("Miyvarxaaar") }
+    var isInputError by remember { mutableStateOf(false) }
+    var shouldShowFindSummoner by remember { mutableStateOf(false) }
 
-    var selectedRegion by remember {
-        mutableStateOf("")
-    }
-
-    var summonerName by remember {
-        mutableStateOf("")
-    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -104,8 +78,8 @@ fun LoginContent(
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentHeight(),
+                    .fillMaxWidth()
+                    .height(360.dp),
                 contentScale = ContentScale.FillBounds,
                 painter = painterResource(id = R.drawable.ic_login_header_background),
                 contentDescription = "login_header_background"
@@ -120,31 +94,55 @@ fun LoginContent(
                                 Color(0xFF242731)
                             ),
                             endY = with(LocalDensity.current) {
-                                188.dp.toPx()
+                                300.dp.toPx()
                             }
                         )
                     )
+            )
+            WelcomeContent(
+                selectedRegion = selectedRegion,
+                summonerName = summonerName,
+                isInputError = isInputError,
+                shouldShowFindSummoner = shouldShowFindSummoner,
+                loginAsSummoner =  { shouldShowFindSummoner = true },
+                loginAsNonSummoner = {  },
             )
         }
     }
 }
 
 @Composable
-fun WelcomeContent() {
+fun WelcomeContent(
+    selectedRegion: String,
+    summonerName: String,
+    isInputError: Boolean,
+    shouldShowFindSummoner: Boolean,
+    loginAsSummoner: () -> Unit,
+    loginAsNonSummoner: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.7f)
-            .padding(top = 92.dp),
+            .fillMaxHeight()
+            .padding(top = 280.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         WelcomeText()
         Spacer(Modifier.height(50.dp))
-//        WelcomeUserInputs()
+        WelcomeUserInputs(
+            selectedRegion = selectedRegion,
+            summonerName = summonerName,
+            isInputError = isInputError,
+            shouldShowFindSummoner = shouldShowFindSummoner,
+            loginAsSummoner =  { loginAsSummoner()},
+            loginAsNonSummoner = { loginAsNonSummoner() },
+            onSummonerNameChanged = {  },
+            onClearClicked = {  },
+            onSelectRegionClicked = {  },
+            onStartClicked = {  }
+        )
     }
 }
-
-
 
 @Composable
 fun RegionsBottomSheet(
@@ -195,7 +193,11 @@ fun RegionsBottomSheetHeader(modifier: Modifier, onCloseClick: () -> Unit) {
                 .align(Alignment.BottomCenter)
         )
     }
-    Divider(modifier = Modifier.fillMaxWidth(), thickness = 0.5.dp, color = Color(0x33CA9D4B))
+    Divider(
+        modifier = Modifier.fillMaxWidth(),
+        thickness = 0.5.dp,
+        color = Color(0x33CA9D4B)
+    )
 }
 
 @Composable

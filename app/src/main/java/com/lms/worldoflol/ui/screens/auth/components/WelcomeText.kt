@@ -28,6 +28,7 @@ fun WelcomeText() {
             fontWeight = 700,
             letterSpacing = 10.sp,
             lineHeight = 47.sp
-        )
+        ),
+        modifier = Modifier.height(47.dp)
     )
 }
