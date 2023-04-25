@@ -17,7 +17,7 @@ import com.lms.worldoflol.ui.theme.startButtonTextColor
 import com.lms.worldoflol.utils.backgroundWithBorder
 
 @Composable
-fun SelectRegionButton(
+fun SelectRegionButton1(
     selectedRegionName: () -> String,
     onSelectRegion: () -> Unit
 ) {
@@ -54,5 +54,5 @@ fun SelectRegionButton(
 @Preview
 @Composable
 fun SelectRegionPreview() {
-    SelectRegionButton({ "Select Region" }) {}
+    SelectRegionButton1({ "Select Region" }) {}
 }

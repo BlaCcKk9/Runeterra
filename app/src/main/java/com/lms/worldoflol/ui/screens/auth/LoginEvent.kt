@@ -8,8 +8,8 @@ sealed class LoginEvent {
         val summonerName: String,
         var onSuccess: (summoner: Summoner) -> Unit
     ) : LoginEvent()
-    data class OnRegionClick(val region: String) : LoginEvent()
-    object OnSelectRegionClick : LoginEvent()
+//    data class OnRegionClick(val region: String) : LoginEvent()
+//    object OnSelectRegionClick : LoginEvent()
     object OnRefresh : LoginEvent()
 }
 

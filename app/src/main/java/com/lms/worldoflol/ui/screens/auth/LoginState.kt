@@ -7,6 +7,4 @@ data class LoginState(
     val isLoading: Boolean = false,
     val summoner: Summoner? = null,
     val error: ErrorType? = null,
-    val isSelectRegionClicked: Boolean = false,
-    val selectedRegionName: String = "",
 )

@@ -14,7 +14,7 @@ fun RuneterraContent(
     response: Any?,
     isLoading: Boolean,
     error: ErrorType?,
-    Skeleton: @Composable () -> Unit,
+    Skeleton: @Composable () -> Unit = {},
     onRefresh: () -> Unit = {},
     onBackPressed: () -> Unit = {},
     content: @Composable (BoxScope) -> Unit
