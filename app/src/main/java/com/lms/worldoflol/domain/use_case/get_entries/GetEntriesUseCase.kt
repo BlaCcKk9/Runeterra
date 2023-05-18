@@ -40,9 +40,9 @@ fun List<EntryDto>.toEntries(): List<Entry?> =
 
 
 fun List<EntryDto>.getEntryByQueueType(type: String) =
-    this
-        .dropWhile { it.queueType != type }
+    dropWhile { it.queueType != type }
         .ifEmpty { null }
         ?.single()
         ?.toEntry()
+
 
