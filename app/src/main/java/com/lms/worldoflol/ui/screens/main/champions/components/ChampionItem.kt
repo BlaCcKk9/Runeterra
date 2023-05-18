@@ -32,12 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.asImageBitmap
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
-import com.google.accompanist.coil.rememberCoilPainter
 import com.lms.worldoflol.common.shimmerEffect
 import com.lms.worldoflol.ui.theme.skeleton_color_40
 import com.lms.worldoflol.ui.theme.skeleton_color_60
 import com.lms.worldoflol.utils.loadPicture
 
+private const val ratio = 0.78f
+private val gradient = arrayListOf(0x4DCA9D4BL, 0x4DEEE2CCL)
 @Composable
 fun ChampionItem(
     champion: Champion,
@@ -49,9 +50,9 @@ fun ChampionItem(
 
     Box(
         modifier = Modifier
-            .aspectRatio(0.78f)
+            .aspectRatio(ratio)
             .backgroundWithBorder(
-                borderGradientColors = arrayListOf(0x4DCA9D4B, 0x4DEEE2CC)
+                borderGradientColors = gradient
             )
             .clickable { onChampionClick(champion.id) }
     ) {
@@ -79,7 +80,7 @@ fun ChampionItem(
                 .align(Alignment.BottomCenter),
             contentAlignment = Alignment.Center
         ) {
-            if (isImageLoading) {
+            if (isImageLoading)
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -88,15 +89,14 @@ fun ChampionItem(
                     contentScale = ContentScale.FillBounds,
                     contentDescription = "background"
                 )
-            } else {
+            else
                 Image(
                     modifier = Modifier.fillMaxWidth(),
                     painter = painterResource(id = R.drawable.ic_rectangle),
                     contentScale = ContentScale.FillBounds,
                     contentDescription = "background"
                 )
-                Text(text = champion.name, style = textStyle18(color = 0xCCEEE2CC))
-            }
+            Text(text = champion.name, style = textStyle18(color = 0xCCEEE2CC))
         }
 
     }

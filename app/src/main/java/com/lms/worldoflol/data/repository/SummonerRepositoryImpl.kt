@@ -1,5 +1,6 @@
 package com.lms.worldoflol.data.repository
 
+import com.lms.worldoflol.data.local.database.SummonerDatabase
 import com.lms.worldoflol.data.remote.WorlOfLolApi
 import com.lms.worldoflol.data.remote.dto.EntryDto
 import com.lms.worldoflol.data.remote.dto.SummonerDto

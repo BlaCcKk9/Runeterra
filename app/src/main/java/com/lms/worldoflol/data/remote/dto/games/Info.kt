@@ -33,36 +33,38 @@ data class Info(
 )
 
 
-fun Info.toMatch(participant: ParticipantDto, matchId: String, region: String) = Match(
-    gameCondition = getGameCondition(participant),
-    gameConditionGradient = getGameConditionGradient(getGameCondition(participant)),
-    gameConditionColor = getConditionColor(getGameCondition(participant)),
-    gameType = getGameType(queueId),
-    championImageUrl = getChampionImageUrl(participant),
-    kill = participant.kills,
-    death = participant.deaths,
-    assist = participant.assists,
-    lane = getLaneName(participant.lane, participant.role),
-    laneImage = getLaneImage(participant.lane, participant.role),
-    gameCreation = getGameCreation(gameCreation),
-    gameDuration = getGameDuration(gameDuration.toInt()),
-    matchId = matchId,
-    summonerPuuid = participant.puuid,
-    summonerRegion = region
-)
-
-fun Info.toMatchDetail(participant: ParticipantDto) = MatchDetail(
-    gameDetail = GameDetail(
-        gameCreation = getGameCreation(gameCreation),
-        gameDuration = getGameDuration(gameDuration.toInt()),
-        gameType = getGameType(queueId),
-        championName = participant.championName,
+fun Info.toMatch(participant: ParticipantDto, matchId: String, region: String) =
+    Match(
+        gameCondition = getGameCondition(participant),
         gameConditionGradient = getGameConditionGradient(getGameCondition(participant)),
         gameConditionColor = getConditionColor(getGameCondition(participant)),
-        gameCondition = getGameCondition(participant)
-    ),
-    teams = getTeamDetail(participants, participant)
-)
+        gameType = getGameType(queueId),
+        championImageUrl = getChampionImageUrl(participant),
+        kill = participant.kills,
+        death = participant.deaths,
+        assist = participant.assists,
+        lane = getLaneName(participant.lane, participant.role),
+        laneImage = getLaneImage(participant.lane, participant.role),
+        gameCreation = getGameCreation(gameCreation),
+        gameDuration = getGameDuration(gameDuration.toInt()),
+        matchId = matchId,
+        summonerPuuid = participant.puuid,
+        summonerRegion = region
+    )
+
+fun Info.toMatchDetail(participant: ParticipantDto) =
+    MatchDetail(
+        gameDetail = GameDetail(
+            gameCreation = getGameCreation(gameCreation),
+            gameDuration = getGameDuration(gameDuration.toInt()),
+            gameType = getGameType(queueId),
+            championName = participant.championName,
+            gameConditionGradient = getGameConditionGradient(getGameCondition(participant)),
+            gameConditionColor = getConditionColor(getGameCondition(participant)),
+            gameCondition = getGameCondition(participant)
+        ),
+        teams = getTeamDetail(participants, participant)
+    )
 
 
 fun getTeamDetail(participants: List<ParticipantDto>, me: ParticipantDto): List<TeamDetail> {

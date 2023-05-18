@@ -85,8 +85,9 @@ fun SearchScreen(
             isLoading = state.isLoading,
             error = state.error,
             onRemove = { viewModel.onEvent(SearchEvents.DeleteSummoner(it)) },
-            onDeleteAll = { viewModel.onEvent(SearchEvents.DeleteAll) }
-        ) { navigateDetailScreen(it) }
+            onDeleteAll = { viewModel.onEvent(SearchEvents.DeleteAll) },
+            onSummonerClick = { navigateDetailScreen(it) }
+        )
 
         SearchTextField(
             modifier = Modifier
@@ -167,8 +168,9 @@ fun SearchBody(
                         searchResult = result,
                         isLoading = isLoading,
                         error = error,
-                        onRefresh = {}
-                    ) { onSummonerClick(it) }
+                        onRefresh = {},
+                        onSummonerClick = { onSummonerClick(it) }
+                    )
                 else
                     RecentSearchContent(
                         recentSearches = recentSearches,
@@ -186,12 +188,12 @@ fun RecentSearchContent(
     onRemove: (summoner: Summoner) -> Unit,
     onRecentSearchClick: (summoner: Summoner) -> Unit
 ) {
-    val ifRecentSearchIsNotEmpty = recentSearches.isNotEmpty()
-    if (ifRecentSearchIsNotEmpty)
+    if (recentSearches.isNotEmpty())
         RecentSearchList(
             recentSearches = recentSearches,
             onRemove = { onRemove(it) },
-            onItemClick = { onRecentSearchClick(it) })
+            onItemClick = { onRecentSearchClick(it) }
+        )
     else EmptyRecentSearchContent()
 }
 
@@ -212,8 +214,9 @@ fun RecentSearchList(
             SummonerItem(
                 summoner = recentSearches[index],
                 ifLast = ifLast,
-                onRemoveClick = { onRemove(it) }
-            ) { onItemClick(it) }
+                onRemoveClick = { onRemove(it) },
+                onItemClick = { onItemClick(it) }
+            )
         }
     }
 }
