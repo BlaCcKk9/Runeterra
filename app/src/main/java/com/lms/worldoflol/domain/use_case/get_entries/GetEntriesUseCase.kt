@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import javax.annotation.Nullable
 import javax.inject.Inject
 
 class GetEntriesUseCase @Inject constructor(
@@ -21,7 +22,7 @@ class GetEntriesUseCase @Inject constructor(
     operator fun invoke(url: String): Flow<Resource<List<Entry?>>> = flow {
         try {
             emit(Resource.Loading())
-            val entries = entriesMapper(repository.getEntries(url))
+            val entries = repository.getEntries(url).toEntries()
             emit(Resource.Success(entries))
         } catch (e: HttpException) {
             emit(Resource.Error(ErrorType.HTTP))
@@ -31,32 +32,17 @@ class GetEntriesUseCase @Inject constructor(
     }
 }
 
-private fun entriesMapper(
-    listOfEntries: List<EntryDto>
-): List<Entry?> {
+fun List<EntryDto>.toEntries(): List<Entry?> =
+    listOf(
+        getEntryByQueueType(QueueType.SOLO),
+        getEntryByQueueType(QueueType.FLEX)
+    )
 
-    var soloEntry: Entry? = null
-    var flexEntry: Entry? = null
 
-    val entries = listOfEntries.dropWhile { entry ->
-        entry.queueType != QueueType.SOLO &&
-                entry.queueType != QueueType.FLEX
-    }
+fun List<EntryDto>.getEntryByQueueType(type: String) =
+    dropWhile { it.queueType != type }
+        .ifEmpty { null }
+        ?.single()
+        ?.toEntry()
 
-    when (entries.size) {
-        2 -> {
-            soloEntry = entries[0].toEntry()
-            flexEntry = entries[1].toEntry()
-        }
-
-        else -> {
-            if (entries.isNotEmpty()) {
-                if (entries[0].queueType == QueueType.SOLO) soloEntry = entries[0].toEntry()
-                else flexEntry = entries[0].toEntry()
-            }
-        }
-    }
-
-    return arrayListOf(soloEntry, flexEntry)
-}
 

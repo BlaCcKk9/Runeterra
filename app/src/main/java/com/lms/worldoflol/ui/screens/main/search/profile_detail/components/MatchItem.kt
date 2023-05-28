@@ -40,10 +40,11 @@ import com.lms.worldoflol.utils.backgroundWithBorder
 @Composable
 fun MatchItem(
     match: Match,
+    modifier: Modifier = Modifier,
     onMatchClicked: (Match) -> Unit
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 8.dp)
             .fillMaxWidth()
             .height(107.dp)

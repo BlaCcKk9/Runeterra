@@ -1,5 +1,6 @@
 package com.lms.worldoflol.ui.screens.main.search.profile_detail.pages
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,11 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,24 +48,32 @@ fun MatchesPage(
     onSeeAllGamesClicked: () -> Unit,
     onMatchClicked: (Match) -> Unit,
 ) {
+    val scrollState = rememberLazyListState()
     LazyColumn(
+        state = scrollState,
         modifier = Modifier
             .padding(lazyColumnPadding)
             .fillMaxWidth()
             .fillMaxHeight(),
-        contentPadding =  PaddingValues(bottom = 16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             MatchesPageHeader(onSeeAllGamesClicked = { onSeeAllGamesClicked() })
+//            scrollState.lastVisibleItemIndex
         }
-        items(matches.size, key = { it }) { position ->
-            val match = matches[position]
-            MatchItem(
-                match = match!!,
-                onMatchClicked = { onMatchClicked(it) }
-            )
-        }
+
+////        itemsIndexed(matches){ index, item ->
+////            val alpha by animateFloatAsState(if (LaunchedEffect(scrollState) {
+////                    snapshotFlow { scrollState.firstVisibleItemIndex }
+////                        .collect { if (it <= index) 1f else 0f }
+////                }))
+//            MatchItem(
+//                match = item!!,
+//                modifier = Modifier.alpha(alpha),
+//                onMatchClicked = { onMatchClicked(it) }
+//            )
+//        }
     }
 }
 
@@ -80,7 +95,7 @@ fun MatchesPageHeader(onSeeAllGamesClicked: () -> Unit) {
             Text(
                 text = "See All",
                 style = textStyle12(0x66EEE2CC),
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable { }
             )
             Spacer(modifier = Modifier.width(13.dp))
             Image(

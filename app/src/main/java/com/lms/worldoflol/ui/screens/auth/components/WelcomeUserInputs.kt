@@ -1,5 +1,9 @@
 package com.lms.worldoflol.ui.screens.auth.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -48,7 +52,7 @@ fun WelcomeUserInputs(
                 summonerName = summonerName,
                 isInputError = isInputError,
                 onSummonerNameChanged = { onSummonerNameChanged(it) },
-                onClearClicked = { onClearClicked() },
+                onClearClicked = { onClearClicked },
                 onSelectRegionButtonClicked = { onSelectRegionClicked() },
                 onStartClicked = { onStartClicked() }
             )
@@ -132,15 +136,11 @@ fun SummonerNameInput(
             .padding(start = 9.dp, end = 20.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        TextField(
-            value = summonerName,
-            onValueChange = { onTextChanged(it) },
-            singleLine = true,
-            textStyle = textStyle(color = 0xFFEEE2CC, textAlign = TextAlign.Start),
-            colors = getTextfieldColors(),
-        )
-
-        if (isError)
+        AnimatedVisibility(
+            visible = isError,
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500))
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = com.lms.worldoflol.R.drawable.ic_text_clear),
                 tint = Color(0x80F12242L),
@@ -149,6 +149,14 @@ fun SummonerNameInput(
                     .align(Alignment.CenterEnd)
                     .clickable { onClearClicked() }
             )
+            TextField(
+                value = summonerName,
+                onValueChange = { onTextChanged(it) },
+                singleLine = true,
+                textStyle = textStyle(color = 0xFFEEE2CC, textAlign = TextAlign.Start),
+                colors = getTextfieldColors(),
+            )
+        }
     }
 }
 
@@ -175,11 +183,11 @@ fun FindSummonerPreview() {
         summonerName = "Summoner Name",
         shouldShowFindSummoner = false,
         isInputError = true,
-        loginAsSummoner = {  },
-        loginAsNonSummoner = {  },
-        onSummonerNameChanged = {  },
-        onClearClicked = {  },
-        onSelectRegionClicked = {  }) {
+        loginAsSummoner = { },
+        loginAsNonSummoner = { },
+        onSummonerNameChanged = { },
+        onClearClicked = { },
+        onSelectRegionClicked = { }) {
     }
 }
 
@@ -190,10 +198,11 @@ fun SummonerOptionsContentPreview() {
         selectedRegion = "",
         summonerName = "Summoner Name",
         shouldShowFindSummoner = true,
-        loginAsSummoner = {  },
-        loginAsNonSummoner = {  },
-        onSummonerNameChanged = {  },
-        onClearClicked = {  },
-        onSelectRegionClicked = {  }) {
-    }
+        loginAsSummoner = { },
+        loginAsNonSummoner = { },
+        onSummonerNameChanged = { },
+        onClearClicked = { },
+        onSelectRegionClicked = { },
+        onStartClicked = { }
+    )
 }

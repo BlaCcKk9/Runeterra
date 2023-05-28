@@ -35,6 +35,7 @@ fun MainNavGraph(
     bottomBarVisibility: (isVisible: Boolean) -> Unit
 ) {
 
+
     val moshi = Moshi(Summoner::class.java)
     var backPressed by remember {
         mutableStateOf(false)

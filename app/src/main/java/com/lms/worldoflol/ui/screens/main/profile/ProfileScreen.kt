@@ -232,19 +232,25 @@ fun ProfileContent(
             },
             onAllGamesPage = {
                 val isLoading = !(!isMatchLoading || matches.isNotEmpty())
-                AnimatedVisibility(
-                    visible = !isLoading,
-                    enter = expandVertically(expandFrom = Alignment.Top) { 20 },
-                    exit = shrinkVertically(animationSpec = tween()) { fullHeight ->
-                        fullHeight / 2
-                    }
-                ) {
-                    MatchesPage(
-                        matches = matches,
-                        onSeeAllGamesClicked = { onSeeAllClicked() },
-                        onMatchClicked = { onMatchClicked(it) }
-                    )
-                }
+//                AnimatedVisibility(
+//                    visible = !isLoading,
+//                    enter = expandVertically(expandFrom = Alignment.Top) { 20 },
+//                    exit = shrinkVertically(animationSpec = tween()) { fullHeight ->
+//                        fullHeight / 2
+//                    }
+//                ) {
+//                    MatchesPage(
+//                        matches = matches,
+//                        onSeeAllGamesClicked = { onSeeAllClicked() },
+//                        onMatchClicked = { onMatchClicked(it) }
+//                    )
+//                }
+
+                MatchesPage(
+                    matches = matches,
+                    onSeeAllGamesClicked = { onSeeAllClicked() },
+                    onMatchClicked = { onMatchClicked(it) }
+                )
 
                 AnimatedVisibility(
                     visible = isLoading,

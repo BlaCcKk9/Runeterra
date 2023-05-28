@@ -8,6 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.lms.worldoflol.R
@@ -35,6 +36,9 @@ fun loadPicture(url: String, @DrawableRes defaultImage: Int): MutableState<Bitma
                 bitmapState.value = resource
             }
             override fun onLoadCleared(placeholder: Drawable?) { }
+            override fun onLoadStarted(placeholder: Drawable?) {
+                super.onLoadStarted(placeholder)
+            }
         })
 
     // get network image
@@ -48,7 +52,9 @@ fun loadPicture(url: String, @DrawableRes defaultImage: Int): MutableState<Bitma
             ) {
                 bitmapState.value = resource
             }
-            override fun onLoadCleared(placeholder: Drawable?) { }
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
         })
 
 
