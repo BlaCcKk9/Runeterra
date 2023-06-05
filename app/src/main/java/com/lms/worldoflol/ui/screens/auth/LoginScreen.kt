@@ -1,6 +1,8 @@
 package com.lms.worldoflol.ui.screens.auth
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,6 +52,7 @@ fun LoginScreen(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginContent(
@@ -68,8 +71,9 @@ fun LoginContent(
     val focusManager = LocalFocusManager.current
 
     var selectedRegion by remember { mutableStateOf("") }
-    var summonerName by remember { mutableStateOf("Miyvarxaaar") }
+    var summonerName by remember { mutableStateOf("") }
     var isInputError by remember { mutableStateOf(false) }
+    var isSelectRegionEmpty by remember { mutableStateOf(false) }
     var shouldShowFindSummoner by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = state) {
@@ -87,6 +91,7 @@ fun LoginContent(
                 onCloseClick = { coroutineScope.launch { modalSheetState.hide() } },
                 onSelectRegion = {
                     coroutineScope.launch { modalSheetState.hide() }
+                    isSelectRegionEmpty = false
                     selectedRegion = it
                 }
             )
@@ -101,14 +106,6 @@ fun LoginContent(
                 painter = painterResource(id = R.drawable.ic_login_header_background),
                 contentDescription = "login_header_background"
             )
-            Image(
-                modifier = Modifier
-                    .padding(top = 100.dp)
-                    .align(Alignment.TopCenter),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.ic_welcome_pins),
-                contentDescription = "login_header_background"
-            )
             Spacer(
                 modifier = Modifier
                     .fillMaxSize()
@@ -119,17 +116,32 @@ fun LoginContent(
                                 Color(0xFF242731)
                             ),
                             endY = with(LocalDensity.current) {
-                                300.dp.toPx()
+                                350.dp.toPx()
                             }
                         )
                     )
+            )
+
+            Image(
+                modifier = Modifier
+                    .padding(top = 80.dp)
+                    .height(168.dp)
+                    .width(278.dp)
+                    .align(Alignment.TopCenter),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(id = R.drawable.ic_welcome_pins),
+                contentDescription = "login_header_background"
             )
             WelcomeContent(
                 selectedRegion = selectedRegion,
                 summonerName = summonerName,
                 isInputError = isInputError,
+                isSelectedRegionEmpty = isSelectRegionEmpty,
                 shouldShowFindSummoner = shouldShowFindSummoner,
-                onSummonerNameChanged = { summonerName = it },
+                onSummonerNameChanged = {
+                    if (isInputError) isInputError = false
+                    summonerName = it
+                },
                 onSelectRegionButtonClicked = {
                     coroutineScope.launch {
                         focusManager.clearFocus()
@@ -143,17 +155,23 @@ fun LoginContent(
                 },
                 loginAsSummoner = { shouldShowFindSummoner = true },
                 loginAsNonSummoner = { onContinue(null) },
-                onContinue = { onEvent(LoginEvent.OnLoginClick(selectedRegion, summonerName)) }
+                onContinue = {
+                    if (selectedRegion.isNotEmpty())
+                        onEvent(LoginEvent.OnLoginClick(selectedRegion, summonerName))
+                    else isSelectRegionEmpty = true
+                }
             )
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WelcomeContent(
     selectedRegion: String,
     summonerName: String,
     isInputError: Boolean,
+    isSelectedRegionEmpty: Boolean,
     shouldShowFindSummoner: Boolean,
     onSummonerNameChanged: (String) -> Unit,
     onSelectRegionButtonClicked: () -> Unit,
@@ -166,7 +184,7 @@ fun WelcomeContent(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(top = 280.dp),
+            .padding(top = 300.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         WelcomeText()
@@ -175,6 +193,7 @@ fun WelcomeContent(
             selectedRegion = selectedRegion,
             summonerName = summonerName,
             isInputError = isInputError,
+            isSelectedRegionEmpty = isSelectedRegionEmpty,
             shouldShowFindSummoner = shouldShowFindSummoner,
             loginAsSummoner = { loginAsSummoner() },
             loginAsNonSummoner = { loginAsNonSummoner() },

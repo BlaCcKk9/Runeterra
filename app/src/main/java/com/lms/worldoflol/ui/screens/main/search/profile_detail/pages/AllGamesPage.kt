@@ -60,20 +60,14 @@ fun MatchesPage(
     ) {
         item {
             MatchesPageHeader(onSeeAllGamesClicked = { onSeeAllGamesClicked() })
-//            scrollState.lastVisibleItemIndex
         }
-
-////        itemsIndexed(matches){ index, item ->
-////            val alpha by animateFloatAsState(if (LaunchedEffect(scrollState) {
-////                    snapshotFlow { scrollState.firstVisibleItemIndex }
-////                        .collect { if (it <= index) 1f else 0f }
-////                }))
-//            MatchItem(
-//                match = item!!,
-//                modifier = Modifier.alpha(alpha),
-//                onMatchClicked = { onMatchClicked(it) }
-//            )
-//        }
+        items(matches.size, key = { it }) { position ->
+            val match = matches[position]
+            MatchItem(
+                match = match!!,
+                onMatchClicked = { onMatchClicked(it) }
+            )
+        }
     }
 }
 

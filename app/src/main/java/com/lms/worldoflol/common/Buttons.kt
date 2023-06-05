@@ -1,5 +1,7 @@
 package com.lms.worldoflol.common
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -8,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -15,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lms.worldoflol.R
+import com.lms.worldoflol.ui.screens.main.champions.champion_detail.components.drawColoredShadow
 import com.lms.worldoflol.ui.theme.textStyle
 import com.lms.worldoflol.utils.backgroundWithBorder
 
@@ -22,6 +26,7 @@ private val ButtonHeight = 60.dp
 private val PrimaryButtonColors = arrayListOf(0xFFCA9D4B, 0xFFF6C97F)
 private val SecondaryButtonColors = arrayListOf(0x990E141B, 0xFF242731)
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PrimaryButton(
     modifier: Modifier = Modifier,
@@ -37,6 +42,11 @@ fun PrimaryButton(
             .padding(horizontal = padding)
             .height(ButtonHeight)
             .alpha(alpha)
+            .drawColoredShadow(
+                color = Color(0xFF0E141B),
+                alpha = 1f,
+                shadowRadius = 12.dp
+            )
             .backgroundWithBorder(
                 backgroundColors = PrimaryButtonColors,
                 borderWidth = 0.dp
@@ -52,6 +62,7 @@ fun PrimaryButton(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SecondaryButton(
     modifier: Modifier = Modifier,
@@ -67,6 +78,11 @@ fun SecondaryButton(
             .padding(horizontal = padding)
             .height(ButtonHeight)
             .alpha(alpha)
+            .drawColoredShadow(
+                color = Color(0xFF0E141B),
+                alpha = 1f,
+                shadowRadius = 12.dp
+            )
             .backgroundWithBorder(
                 backgroundColors = SecondaryButtonColors,
                 borderGradientColors = arrayListOf(0x80CA9D4B, 0x80CA9D4B)
@@ -85,9 +101,12 @@ fun SecondaryButton(
 @Composable
 fun SelectRegionButton(
     regionName: String = "",
+    isSelectedRegionEmpty: Boolean = false,
     onClick: (String) -> Unit
 ) {
     val text = regionName.ifEmpty { "Select Region" }
+    val borderColor: Long = if (isSelectedRegionEmpty)
+        0x80F12242 else 0x80CA9D4B
 
     Box(
         modifier = Modifier
@@ -96,7 +115,7 @@ fun SelectRegionButton(
             .height(ButtonHeight)
             .backgroundWithBorder(
                 backgroundColors = SecondaryButtonColors,
-                borderGradientColors = arrayListOf(0x80CA9D4B, 0x80CA9D4B)
+                borderGradientColors = borderColor
             )
             .padding(horizontal = 24.dp)
             .clickable { onClick(regionName) },
