@@ -1,5 +1,6 @@
 package com.lms.worldoflol.ui.screens.main.champions.champion_detail.components
 
+import android.graphics.Color.toArgb
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.Modifier
@@ -10,6 +11,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun Modifier.drawColoredShadow(
     color: Color,
@@ -19,8 +21,8 @@ fun Modifier.drawColoredShadow(
     offsetY: Dp = 0.dp,
     offsetX: Dp = 0.dp
 ) = this.drawBehind {
-    val transparentColor = android.graphics.Color.toArgb(color.copy(alpha = 0.0f).value.toLong())
-    val shadowColor = android.graphics.Color.toArgb(color.copy(alpha = alpha).value.toLong())
+    val transparentColor = toArgb(color.copy(alpha = 0.0f).value.toLong())
+    val shadowColor = toArgb(color.copy(alpha = alpha).value.toLong())
     this.drawIntoCanvas {
         val paint = Paint()
         val frameworkPaint = paint.asFrameworkPaint()

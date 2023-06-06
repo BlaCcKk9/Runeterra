@@ -37,6 +37,7 @@ import com.lms.worldoflol.ui.theme.textStyle24
 import com.lms.worldoflol.utils.backgroundWithBorder
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun LoginScreen(
@@ -149,6 +150,7 @@ fun LoginContent(
                         modalSheetState.show()
                     }
                 },
+                onBackClicked = { shouldShowFindSummoner = false },
                 onClearClicked = {
                     summonerName = ""
                     isInputError = false
@@ -175,6 +177,7 @@ fun WelcomeContent(
     shouldShowFindSummoner: Boolean,
     onSummonerNameChanged: (String) -> Unit,
     onSelectRegionButtonClicked: () -> Unit,
+    onBackClicked: () -> Unit,
     onClearClicked: () -> Unit,
     loginAsSummoner: () -> Unit,
     loginAsNonSummoner: () -> Unit,
@@ -198,6 +201,7 @@ fun WelcomeContent(
             loginAsSummoner = { loginAsSummoner() },
             loginAsNonSummoner = { loginAsNonSummoner() },
             onSummonerNameChanged = { onSummonerNameChanged(it) },
+            onBackClicked = { onBackClicked() },
             onClearClicked = { onClearClicked() },
             onSelectRegionClicked = { onSelectRegionButtonClicked() },
             onStartClicked = { onContinue() }
@@ -278,6 +282,7 @@ fun RegionsBottomSheetList(onRegionClick: (region: Regions) -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun LoginScreenPreview() {

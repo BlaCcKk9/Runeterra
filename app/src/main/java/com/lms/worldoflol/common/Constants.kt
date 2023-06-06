@@ -1,6 +1,6 @@
 package com.lms.worldoflol.common
 
-const val API_KEY = "RGAPI-eb3eb2d6-ea24-4a14-bd45-4bb2b001f4a3"
+const val API_KEY = "RGAPI-be3814b6-d422-4387-9646-b84ce2e8add2"
 
 object Tier {
     const val IRON = "IRON"
