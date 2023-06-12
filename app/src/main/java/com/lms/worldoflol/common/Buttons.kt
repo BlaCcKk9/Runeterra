@@ -156,16 +156,19 @@ fun ButtonContent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun PrimaryButtonPreview() {
     PrimaryButton(
         text = "I am a Summoner",
         enable = false,
-        modifier = Modifier.fillMaxWidth()
-    ) {}
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { }
+    )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun PrimaryButtonWrapPreview() {
@@ -177,25 +180,30 @@ fun PrimaryButtonWrapPreview() {
         PrimaryButton(
             text = "I am a Summoner",
             enable = false,
-            modifier = Modifier.weight(1f)
-        ) {}
+            modifier = Modifier.weight(1f),
+            onClick = { }
+        )
         PrimaryButton(
             text = "I am a Summoner",
-            modifier = Modifier.weight(1f)
-        ) {}
+            modifier = Modifier.weight(1f),
+            onClick = { }
+        )
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun SecondaryButtonPreview() {
     SecondaryButton(
         text = "I am not Summoner",
         enable = true,
-        modifier = Modifier.fillMaxWidth()
-    ) {}
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { }
+    )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun SecondaryButtonWrapPreview() {
@@ -209,12 +217,14 @@ fun SecondaryButtonWrapPreview() {
             enable = false,
             enableTrailingIcon = true,
             padding = 5.dp,
-            modifier = Modifier.weight(1f)
-        ) {}
+            modifier = Modifier.weight(1f),
+            onClick = { }
+        )
         SecondaryButton(
             text = "I am a Summoner",
             padding = 5.dp,
-            modifier = Modifier.weight(1f)
-        ) {}
+            modifier = Modifier.weight(1f),
+            onClick = { }
+        )
     }
 }
